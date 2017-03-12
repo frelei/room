@@ -1,36 +1,37 @@
+import Foundation
 import Vapor
 import Fluent
-import Foundation
 
-final class Room: Model {
+final class User: Model {
     
     var id: Node?
     var name: String
-    var number: Int
-
-    init(name: String, number: Int) {
+    var email: String
+    
+    init(name: String, email: String) {
         id = nil
         self.name = name
-        self.number = number
+        self.email = email
     }
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
         name = try node.extract("name")
-        number = try node.extract("number")
+        email = try node.extract("email")
     }
     
     func makeNode(context: Context) throws -> Node {
         return try Node(node: [
             "id": id,
             "name": name,
-            "number": number
+            "email": email
             ])
     }
-
+    
 }
 
-extension Room: Preparation {
+
+extension User: Preparation {
     static func prepare(_ database: Database) throws {}
     static func revert(_ database: Database) throws {}
 }

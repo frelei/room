@@ -4,6 +4,12 @@ import HTTP
 
 final class RoomController {
     
+    let droplet: Droplet
+    
+    init(droplet: Droplet) {
+        self.droplet = droplet
+    }
+    
     func show(_ request: Request) throws -> ResponseRepresentable {
        return try Room.all().makeNode().converted(to: JSON.self)
     }
