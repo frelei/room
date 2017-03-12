@@ -12,31 +12,33 @@ import HTTP
 
 final class UserController {
     
-    let droplet: Droplet
-    
-    init(droplet: Droplet) {
-        self.droplet = droplet
+    func addRoutes(droplet: Droplet) {
+        droplet.get("user", handler: show)
+        droplet.delete("user", handler: delete)
+        droplet.put("user", handler: create)
+        droplet.post("user", handler: update)
     }
     
     func show(_ request: Request) throws -> ResponseRepresentable {
         return try User.all().makeNode().converted(to: JSON.self)
     }
     
-    func delete(_ request: Request, _ user: User) throws -> ResponseRepresentable {
+    func delete(_ request: Request) throws -> ResponseRepresentable {
+        let user: User = try request.object()
         try user.delete()
         return JSON([:])
     }
     
-    func update(_ request: Request, _ user: User) throws -> ResponseRepresentable {
-        var updatedUser = user
-        try updatedUser.save()
-        return updatedUser
+    func update(_ request: Request) throws -> ResponseRepresentable {
+        var user: User = try request.object()
+        try user.save()
+        return user
     }
     
-    func create(_ request:Request, _ user: User) throws -> ResponseRepresentable {
-        var tempUser = user
-        try tempUser.save()
-        return tempUser
+    func create(_ request:Request) throws -> ResponseRepresentable {
+        var user: User = try request.object()
+        try user.save()
+        return user
     }
     
 }

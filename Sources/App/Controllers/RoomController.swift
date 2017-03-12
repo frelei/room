@@ -4,10 +4,11 @@ import HTTP
 
 final class RoomController {
     
-    let droplet: Droplet
-    
-    init(droplet: Droplet) {
-        self.droplet = droplet
+    func addRoutes(droplet: Droplet) {
+        droplet.get("room", handler: roomController.show)
+        droplet.delete("room", handler: roomController.delete)
+        droplet.put("room", handler: roomController.create)
+        droplet.post("room", handler: roomController.update)
     }
     
     func show(_ request: Request) throws -> ResponseRepresentable {
@@ -15,22 +16,21 @@ final class RoomController {
     }
     
     func delete(_ request: Request) throws -> ResponseRepresentable {
-//        try room.delete()
+        let room: Room = try request.object()
+        try room.delete()
         return JSON([:])
     }
     
     func update(_ request: Request) throws -> ResponseRepresentable {
-//        var updatedRoom = room
-//        try updatedRoom.save()
-//        return updatedRoom
-        return ""
+        var room: Room = try request.object()
+        try room.save()
+        return room
     }
     
     func create(_ request:Request) throws -> ResponseRepresentable {
-//        var tempRoom = room
-//        try tempRoom.save()
-//        return room
-        return ""
+        var room: Room = try request.object()
+        try room.save()
+        return room
     }
     
 }

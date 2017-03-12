@@ -6,35 +6,45 @@ final class Schedule: Model {
     
     var id: Node?
     var date: String
-    var user: Node
-    var room: Node
+    var userId: Node
+    var roomId: Node
+    var exists: Bool = false
     
-    init(date: String, user:Node, room:Node) {
+    init(date: String, userId:Node, roomId:Node) {
         id = nil
         self.date = date
-        self.user = user
-        self.room = room
+        self.userId = userId
+        self.roomId = roomId
     }
     
     init(node: Node, in context: Context) throws {
         id = try node.extract("id")
         date = try node.extract("date")
-        user = try node.extract("user")
-        room = try node.extract("room")
+        userId = try node.extract("user_id")
+        roomId = try node.extract("room_id")
     }
     
     func makeNode(context: Context) throws -> Node {
         return try Node(node: [
             "id": id,
             "date": date,
-            "user": user,
-            "room": room
+            "user_id": userId,
+            "room_id": roomId
             ])
     }
     
 }
 
 extension Schedule: Preparation {
-    static func prepare(_ database: Database) throws {}
-    static func revert(_ database: Database) throws {}
+    static func prepare(_ database: Database) throws {
+        try database.create("schedules") { schedule in
+            schedule.id()
+            schedule.string("date")
+            schedule.parent(User.self, optional: false)
+            schedule.parent(Room.self, optional: false)
+        }
+    }
+    static func revert(_ database: Database) throws {
+        try database.delete("schedules")
+    }
 }

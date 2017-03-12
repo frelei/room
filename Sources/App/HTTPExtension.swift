@@ -13,8 +13,8 @@ import HTTP
 
 extension Request {
     
-    func post<T: Model>() throws -> T {
-        guard let json = json else { throw Abort.badRequest }
+    func object<T: Model>() throws -> T {
+        guard let json = json else { throw Abort.custom(status: Status.conflict, message: "Parsing object failure") }
         return try T(node: json)
     }
     

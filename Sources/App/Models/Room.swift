@@ -7,7 +7,8 @@ final class Room: Model {
     var id: Node?
     var name: String
     var number: Int
-
+    var exists: Bool = false
+    
     init(name: String, number: Int) {
         id = nil
         self.name = name
@@ -31,6 +32,17 @@ final class Room: Model {
 }
 
 extension Room: Preparation {
-    static func prepare(_ database: Database) throws {}
-    static func revert(_ database: Database) throws {}
+    
+    static func prepare(_ database: Database) throws {
+        try database.create("rooms") { room in
+            room.id()
+            room.string("name")
+            room.integer("number")
+        }
+    }
+    
+    static func revert(_ database: Database) throws {
+        try database.delete("rooms")
+    }
+    
 }
