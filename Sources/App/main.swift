@@ -1,16 +1,19 @@
 import Vapor
 import VaporRedis
 
-
 let droplet = Droplet()
+
+// MARK: Redis
+let redisProvider = try VaporRedis.Provider(config: droplet.config)
+droplet.addProvider(redisProvider)
 
 
 // MARK: - Room
 let roomController = RoomController(droplet: droplet)
 droplet.get("room", handler: roomController.show)
-droplet.delete("room", Room.self, handler: roomController.delete)
-droplet.put("room", Room.self, handler: roomController.create)
-droplet.post("room", Room.self, handler: roomController.update)
+droplet.delete("room", handler: roomController.delete)
+droplet.put("room", handler: roomController.create)
+droplet.post("room", handler: roomController.update)
 
 
 
@@ -27,7 +30,6 @@ droplet.get { req in
         "message": droplet.localization[req.lang, "welcome", "title"]
         ])
 }
-
 
 
 droplet.run()
