@@ -12,11 +12,16 @@ import HTTP
 
 final class ScheduleController {
     
+    var socket: WebSocket? = nil
+    
     func addRoutes(droplet: Droplet) {
         droplet.get("schedule", handler: show)
         droplet.delete("schedule", handler: delete)
         droplet.put("schedule", handler: create)
         droplet.post("schedule", handler: update)
+        droplet.socket("scheduler") { (request, socket) in
+            self.socket = socket
+        }
     }
     
     func show(_ request: Request) throws -> ResponseRepresentable {
@@ -38,6 +43,9 @@ final class ScheduleController {
     func create(_ request:Request) throws -> ResponseRepresentable {
         var schedule: Schedule = try request.object()
         try schedule.save()
+        if let socket = socket {
+            try socket.send(schedule.makeJSON().serialize(prettyPrint: true))
+        }
         return schedule
     }
     

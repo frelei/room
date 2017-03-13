@@ -3,6 +3,7 @@ import VaporMySQL
 
 let droplet = Droplet()
 
+
 // MARK: VaporMySQL
 let mySQLProvider = try VaporMySQL.Provider(config: droplet.config)
 droplet.addProvider(mySQLProvider)
@@ -26,6 +27,7 @@ droplet.get { req in
         "message": droplet.localization[req.lang, "welcome", "title"]
         ])
 }
+
 
 droplet.run()
 
