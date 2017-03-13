@@ -20,6 +20,7 @@ final class ScheduleController {
         droplet.put("schedule", handler: create)
         droplet.post("schedule", handler: update)
         droplet.socket("scheduler") { (request, socket) in
+            print("Starting socket scheduler")
             self.socket = socket
         }
     }
@@ -44,7 +45,7 @@ final class ScheduleController {
         var schedule: Schedule = try request.object()
         try schedule.save()
         if let socket = socket {
-            try socket.send(schedule.makeJSON().serialize(prettyPrint: true))
+            try socket.send(schedule.makeJSON().serialize().string())
         }
         return schedule
     }
